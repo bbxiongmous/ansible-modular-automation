@@ -1,0 +1,10 @@
+# Ignore Ansible retry files
+*.retry
+
+# Ignore sensitive files (if you ever use them)
+*.vault_pass
+.env
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db

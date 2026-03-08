@@ -1,0 +1,7 @@
+---
+# Master playbook to call roles
+- name: Apply Infrastructure Baseline
+  hosts: webservers
+  become: yes
+  roles:
+    - webserver

@@ -1,0 +1,6 @@
+---
+# Handler to restart nginx only when notified
+- name: restart nginx
+  service:
+    name: nginx
+    state: restarted

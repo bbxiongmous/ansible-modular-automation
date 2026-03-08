@@ -1,0 +1,32 @@
+---
+# Playbook using Handlers for efficient service management
+- name: Deploy Web Server with Handlers
+  hosts: webservers
+  become: yes
+
+  tasks:
+    - name: Install Nginx package
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+    - name: Deploy dynamic index page from template
+      template:
+        src: index.html.j2
+        dest: /var/www/html/index.html
+        mode: '0644'
+      # If this file changes, trigger the 'restart nginx' handler
+      notify: restart nginx
+
+    - name: Ensure Nginx service is started
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+  handlers:
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted

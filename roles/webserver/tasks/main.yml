@@ -1,0 +1,44 @@
+---
+# roles/webserver/tasks/main.yml
+
+# --- PHASE 1: IDENTIFICATION (The "Check" phase) ---
+- name: Display target system information
+  debug:
+    msg: 
+      - "Inventory Hostname: {{ inventory_hostname }}"
+      - "Distribution: {{ ansible_distribution }}"
+      - "OS Family: {{ ansible_os_family }}"
+  # This task always runs to give you visibility before the logic starts
+
+# --- PHASE 2: DEBIAN/UBUNTU LOGIC ---
+- name: Apply configuration for Debian-family
+  block:
+    - name: Install Nginx (APT)
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+    - name: Deploy Ubuntu index template
+      template:
+        src: index.html.j2
+        dest: /var/www/html/index.html
+      notify: restart nginx
+  
+  # This block ONLY executes if the system is Debian/Ubuntu
+  when: ansible_os_family == "Debian"
+
+# --- PHASE 3: REDHAT/CENTOS LOGIC ---
+- name: Apply configuration for RedHat-family
+  block:
+    - name: Install Nginx (YUM)
+      yum:
+        name: nginx
+        state: present
+
+    - name: Custom RedHat message
+      debug:
+        msg: "RedHat detected. If this were a real RHEL server, YUM tasks would run here."
+  
+  # This block will be SKIPPED on your current Ubuntu Docker containers
+  when: ansible_os_family == "RedHat"

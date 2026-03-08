@@ -1,0 +1,28 @@
+services:
+  # 这是你的控制台，你在这里操作 Ansible
+  control-node:
+    image: ubuntu:22.04
+    container_name: control-node
+    tty: true
+    volumes:
+      - .:/root/ansible # 挂载本地目录，方便你在电脑上用 VS Code 改代码
+    networks:
+      - ansible-net
+
+  # 这是你的 Web 服务器 1
+  web01:
+    image:   rastasheep/ubuntu-sshd
+    container_name: web01
+    networks:
+      - ansible-net
+
+  # 这是你的 Web 服务器 2
+  web02:
+    image:   rastasheep/ubuntu-sshd
+    container_name: web02
+    networks:
+      - ansible-net
+
+networks:
+  ansible-net:
+    driver: bridge
